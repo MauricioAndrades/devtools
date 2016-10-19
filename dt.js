@@ -527,7 +527,6 @@ b=b.toUpperCase();if(a===b)return 0;return a>b?1:-1}})();
 })(window);
 
 (function(global){
-  /** scope */
   global['scan_leaves'] = function fn_scan_leaves(obj) {
     var leaves = traverse(obj).reduce(function (acc, x) {
       if (this.isLeaf)
@@ -539,8 +538,6 @@ b=b.toUpperCase();if(a===b)return 0;return a>b?1:-1}})();
 })(window);
 
 (function(global){
-  /** scope */
-  
   /** print all colors on page */
   global.colors = function fn_colors() {
     var includeBorderColorsWithZeroWidth = false
@@ -824,7 +821,6 @@ b=b.toUpperCase();if(a===b)return 0;return a>b?1:-1}})();
 
 // loadxhr
 (function(global){
-  /** scope */
   function loadXHR (url) {
     return new Promise(load)
     function load (successCallback, failureCallback) {
@@ -2898,6 +2894,7 @@ b=b.toUpperCase();if(a===b)return 0;return a>b?1:-1}})();
         return typeof obj
     }
   }
+  
   global['scan'] = function fn_scan(obj, callback) {
     callback = callback || stringify;
     var clone = traverse(obj).clone()
@@ -2982,6 +2979,105 @@ b=b.toUpperCase();if(a===b)return 0;return a>b?1:-1}})();
 // jst
 !function(n,t){"function"==typeof require&&"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define(function(){return t()}):n.jst=t()}(this,function(){function n(n){var t=u[n];return t||"\\u"+("0000"+n.charCodeAt(0).toString(16)).slice(-4)}function t(n){return!f[n]&&c.test(n)}function e(n){return"Function("+o("return this;")+")()"}function r(n){for(var e="",r=0;r<n.length;r++)e+=t(n[r])?"."+n[r]:"["+o(n[r])+"]";return e}function o(n,t,e){if(Object(n)!==n)return s[typeof n](n,t,e);var r=a[Object.prototype.toString.call(n)];return r?r(n,t,e):void 0}var i=/[\\\'\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,u={"\b":"\\b","\t":"\\t","\n":"\\n","\f":"\\f","\r":"\\r","'":"\\'",'"':'\\"',"\\":"\\\\"},f={};"break else new var case finally return void catch for switch while continue function this with default if throw delete in try do instanceof typeof abstract enum int short boolean export interface static byte extends long super char final native synchronized class float package throws const goto private transient debugger implements protected volatile double import public let yield".split(" ").map(function(n){f[n]=!0});var c=/^[A-Za-z_$][A-Za-z0-9_$]*$/,a={"[object Array]":function(n,t,e){var r=n.map(function(n,r){var o=e(n,r);return void 0===o?String(o):t+o.split("\n").join("\n"+t)}).join(t?",\n":",");return t&&r?"[\n"+r+"\n]":"["+r+"]"},"[object Object]":function(n,e,r){if("function"==typeof Buffer&&Buffer.isBuffer(n))return"new Buffer("+o(n.toString())+")";var i=Object.keys(n).reduce(function(i,u){var f=r(n[u],u);return void 0===f?i:(u=t(u)?u:o(u),f=String(f).split("\n").join("\n"+e),i.push(e+u+":"+(e?" ":"")+f),i)},[]).join(e?",\n":",");return e&&i?"{\n"+i+"\n}":"{"+i+"}"},"[object Date]":function(n){return"new Date("+n.getTime()+")"},"[object String]":function(n){return"new String("+o(n.toString())+")"},"[object Number]":function(n){return"new Number("+n+")"},"[object Boolean]":function(n){return"new Boolean("+n+")"},"[object Uint8Array]":function(n,t){if("function"==typeof Buffer&&Buffer.isBuffer(n))return"new Buffer("+o(n.toString())+")";if(t){for(var e="",r=0;r<n.length;r++)e+=t+n[r]+",\n";return"new Uint8Array([\n"+e+"\n])"}return"new Uint8Array(["+n.join(t?",\n":",")+"])"},"[object RegExp]":String,"[object Function]":String,"[object global]":e,"[object Window]":e},s={string:function(t){return"'"+t.replace(i,n)+"'"},number:String,object:String,"boolean":String,symbol:String,undefined:String};return function(n,t,e,i){function u(n,t){s.push(t);var e=h(n,o);return s.pop(),e}i=i||{},"string"!=typeof e&&(e=new Array(Math.max(0,0|e)+1).join(" "));var f=Number(i.maxDepth)||100,c=!!i.references,a=Number(i.maxValues)||1e5,s=[],p=[],l=[],b=[],g=[],h=c?function(n,t){if(n&&("object"==typeof n||"function"==typeof n)){var r=l.indexOf(n);if(r>-1)return void g.push(s.slice(),b[r]);l.push(n),b.push(s.slice())}if(!(s.length>f||a--<=0))return t(n,e,u)}:function(n,t){var r=p.indexOf(n);if(!(r>-1||s.length>f||a--<=0)){p.push(n);var n=t(n,e,u);return p.pop(),n}};if("function"==typeof t){var d=h;h=function(n,e){return d(n,function(n,r,o){return t(n,r,function(n){return e(n,r,o)})})}}var v=h(n,o);if(g.length){for(var j=e?"\n":"",y=e?" = ":"=",m=";"+j,d=e?"(function () {":"(function(){",x="}())",w=["var x"+y+v],S=0;S<g.length;S+=2)w.push("x"+r(g[S])+y+"x"+r(g[S+1]));return w.push("return x"),d+j+w.join(m)+m+x}return v}});
 
+// documentCookies
+function splitCookies() {
+  var split_cookies = {};
+  document.cookie.split(';').forEach(function(el,i){
+    var elarr = el.split('=');
+    split_cookies[elarr[0].trim()] = decodeURIComponent(elarr[1]);
+  })
+    
+    for(var key in split_cookies) {
+      if(split_cookies.hasOwnProperty(key)){
+        if(split_cookies[key].charAt(0) === "{") {
+          split_cookies[key] = JSON.parse(split_cookies[key])
+        }
+      }
+    }
+  return flatten(split_cookies);
+}
+
+function view_utag_dom(){
+  return $$('*').forEach(function(el) {
+  var source, tagname;
+  tagname = el.tagName.toLowerCase();
+  if (el.src) {
+    source = el.src.toLowerCase();
+  }
+  var regex = new RegExp(".*assets.*", "igm");
+  if ((tagname === 'script' || tagname === 'iframe') && (source && source.search(regex) < 0))
+    console.log(el)
+})
+}
+
+// querytring
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var r;r="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,r.querystring=e()}}(function(){return function e(r,n,t){function o(i,f){if(!n[i]){if(!r[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var s=n[i]={exports:{}};r[i][0].call(s.exports,function(e){var n=r[i][1][e];return o(n?n:e)},s,s.exports,e,r,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}({1:[function(e,r,n){"use strict";function t(e,r){return Object.prototype.hasOwnProperty.call(e,r)}r.exports=function(e,r,n,u){r=r||"&",n=n||"=";var i={};if("string"!=typeof e||0===e.length)return i;var f=/\+/g;e=e.split(r);var c=1e3;u&&"number"==typeof u.maxKeys&&(c=u.maxKeys);var a=e.length;c>0&&a>c&&(a=c);for(var s=0;s<a;++s){var p,d,l,y,v=e[s].replace(f,"%20"),m=v.indexOf(n);m>=0?(p=v.substr(0,m),d=v.substr(m+1)):(p=v,d=""),l=decodeURIComponent(p),y=decodeURIComponent(d),t(i,l)?o(i[l])?i[l].push(y):i[l]=[i[l],y]:i[l]=y}return i};var o=Array.isArray||function(e){return"[object Array]"===Object.prototype.toString.call(e)}},{}],2:[function(e,r,n){"use strict";function t(e,r){if(e.map)return e.map(r);for(var n=[],t=0;t<e.length;t++)n.push(r(e[t],t));return n}var o=function(e){switch(typeof e){case"string":return e;case"boolean":return e?"true":"false";case"number":return isFinite(e)?e:"";default:return""}};r.exports=function(e,r,n,f){return r=r||"&",n=n||"=",null===e&&(e=void 0),"object"==typeof e?t(i(e),function(i){var f=encodeURIComponent(o(i))+n;return u(e[i])?t(e[i],function(e){return f+encodeURIComponent(o(e))}).join(r):f+encodeURIComponent(o(e[i]))}).join(r):f?encodeURIComponent(o(f))+n+encodeURIComponent(o(e)):""};var u=Array.isArray||function(e){return"[object Array]"===Object.prototype.toString.call(e)},i=Object.keys||function(e){var r=[];for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&r.push(n);return r}},{}],querystring:[function(e,r,n){"use strict";n.decode=n.parse=e("./decode"),n.encode=n.stringify=e("./encode")},{"./decode":1,"./encode":2}]},{},[])("querystring")});
+
+// preventDefault
+function prevent_default(selector) {
+    selector = selector || $0;
+    $(selector).click(function(event) {
+        event.preventDefault();
+    });
+}
+
+// oneTimeEvent
+(function(global, options) {
+    global['oneTimeEvent'] = function(o) {
+        var event;
+        if (o.customEvent) {
+            event = new CustomEvent(eventName, o.details)
+        } else {
+            event = new Event(o.eventName, o.eventConfig);
+        }
+
+        var elem = document.querySelectorAll(o.eventListener)[0] || document.body;
+
+        var eventHandler = function evhandler(e) {
+            var target = e.target || e.srcElement;
+            if (o.preventDefault) {
+                e.preventDefault();
+            }
+            if (o.stopPropigation) {
+                e.stopPropigation();
+            }
+            console.log(e)
+        }
+        /** Listener */
+        // target.addEventListener(type, listener[, options]);
+        elem.addEventListener(event.type, eventHandler, o.eventListenerOptions)
+    };
+})(window);
+
+(function(global){
+    var config = {
+        customEvent: false,
+        customEventDeatils: {details: {}},
+        eventName: 'click',
+        eventConfig: {
+            "bubbles": true,
+            "cancelable": false
+        },
+        eventListener: 'body',
+        eventListenerOptions: {once: true, capture: true},
+        eventTarget: false,
+        eventPreventDefault: true,
+        eventStopPropagation: false,
+        eventStopImmediatePropagation: false
+    }
+    global.oneTimeEvent(config);
+})(window);
+
+(function(global){
+  return  global["monitor_events"] = function() {
+    return monitorEvents(document, ["focus", "zoom", "abort", "blur", "change", "change", "click", "dblclick", "error", "focus", "keydown", "keypress", "keyup", "load", "unload", "mousedown", "mouseup", "reset", "resize", "search", "select", "submit", "textInput"])
+  }
+})(window)
+
+// console.save(data, filename);
+(function(console){console.save=function(data,filename){if(!data)return;if(!filename)filename="console.json";if(typeof data==="object")data=JSON.stringify(data,undefined,4);var blob=new Blob([data],{type:"text/json"}),e=document.createEvent("MouseEvents"),a=document.createElement("a");a.download=filename;a.href=window.URL.createObjectURL(blob);a.dataset.downloadurl=["text/json",a.download,a.href].join(":");e.initMouseEvent("click",true,false,window,0,0,0,0,0,false,false,false,false,0,null);a.dispatchEvent(e)}})(console);
+
+
 console.group()
 console.log('jquery')
 console.log('mootools')
@@ -2996,6 +3092,11 @@ console.log('scan_copy')
 console.log('findKey')
 console.log('kindof')
 console.log('sort_obj')
+console.log('splitCookies() -> obj')
+console.log('view_utag_dom() -> dom view of scripts on page')
+console.log('querystring')
+console.log('prevent_default(selector||$0)')
+console.log('oneTimeEvent()')
 console.groupEnd()
 
 var example = {
