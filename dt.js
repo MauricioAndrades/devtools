@@ -21,18 +21,7 @@ if(i)a[i]&&a[i].stop&&r(a[i]);else for(i in a)a[i]&&a[i].stop&&mt.test(i)&&r(a[i
 
 
 /** scrub */
-;(function(global, scrub) {
-  scrub = function(obj) {
-    var local = traverse(obj).clone()
-    var scrubbed = traverse(local).forEach(function(x) {
-      if (this.circular) {
-        this.remove()
-      }
-    })
-    return scrubbed
-  }
-  global['scrub'] = scrub
-})(window, {});
+(function(global,scrub){scrub=function(obj){var local=traverse(obj).clone();var scrubbed=traverse(local).forEach(function(x){if(this.circular){this.remove()}});return scrubbed};global["scrub"]=scrub})(window,{});
 
 /** recursive flatten */
 ;(function(global) {
@@ -67,99 +56,8 @@ if(i)a[i]&&a[i].stop&&r(a[i]);else for(i in a)a[i]&&a[i].stop&&mt.test(i)&&r(a[i
 })(window);
 
 // flatten
-;(function(global) {
-  var noop = function() {}
-    // do nothing.
-  global['flatten'] = function(isArray, wrapped, callback) {
-    callback = callback || noop
-    return function(table, callback) {
-      return reduce('', {}, table, callback)
-    }
+(function(global){var noop=function(){};global["flatten"]=function(isArray,wrapped,callback){callback=callback||noop;return function(table,callback){return reduce("",{},table,callback)};function reduce(path,acc,table,callback){if(isArray(table)){var len=table.length;if(len){var idx=0;while(idx<len){var prop=path+"["+idx+"]",item=table[idx++];if(wrapped(item)!==item)acc[prop]=item;else reduce(prop,acc,item)}}else acc[path]=table}else{var empty=true;if(path)for(var prop in table){if(table.hasOwnProperty(prop)){var item=table[prop],prop=path+"."+prop,empty=false;if(wrapped(item)!==item)acc[prop]=item;else reduce(prop,acc,item)}}else for(var prop in table)if(table.hasOwnProperty(prop)){var item=table[prop],empty=false;if(wrapped(item)!==item)acc[prop]=item;else reduce(prop,acc,item)}if(empty)acc[path]=table}if(callback instanceof Function)return callback(acc);return acc}}(Array.isArray,Object);global["unflatten"]=function(table){var result={};for(var path in table)if(table.hasOwnProperty(path)){var cursor=result,len=path.length,prop="",idx=0;while(idx<len){var char=path.charAt(idx);if(char==="[")var start=idx+1,end=path.indexOf("]",start),cursor=cursor[prop]=cursor[prop]||[],prop=path.slice(start,end),idx=end+1;else{var cursor=cursor[prop]=cursor[prop]||{},start=char==="."?idx+1:idx,bracket=path.indexOf("[",start),dot=path.indexOf(".",start);if(bracket<0&&dot<0)var end=idx=len;else if(bracket<0)var end=idx=dot;else if(dot<0)var end=idx=bracket;else var end=idx=bracket<dot?bracket:dot;var prop=path.slice(start,end)}}cursor[prop]=table[path]}return result[""]}})(window);
 
-    function reduce(path, acc, table, callback) {
-      if (isArray(table)) {
-        var len = table.length
-        if (len) {
-          var idx = 0
-          while (idx < len) {
-            var prop = path + '[' + idx + ']',
-              item = table[idx++]
-            if (wrapped(item) !== item)
-              acc[prop] = item
-            else
-              reduce(prop, acc, item)
-          }
-        } else
-          acc[path] = table
-      } else {
-        var empty = true
-        if (path)
-          for (var prop in table) {
-            if (table.hasOwnProperty(prop)) {
-              var item = table[prop],
-                prop = path + '.' + prop,
-                empty = false
-              if (wrapped(item) !== item)
-                acc[prop] = item
-              else
-                reduce(prop, acc, item)
-            }
-          }
-        else
-          for (var prop in table)
-            if (table.hasOwnProperty(prop)) {
-              var item = table[prop],
-                empty = false
-              if (wrapped(item) !== item)
-                acc[prop] = item
-              else
-                reduce(prop, acc, item)
-            }
-        if (empty)
-          acc[path] = table
-      }
-      if (callback instanceof Function)
-        return callback(acc)
-      return acc
-    }
-  }(Array.isArray, Object);
-  global['unflatten'] = function(table) {
-    var result = {}
-    for (var path in table)
-      if (table.hasOwnProperty(path)) {
-        var cursor = result,
-          len = path.length,
-          prop = '',
-          idx = 0
-        while (idx < len) {
-          var char = path.charAt(idx)
-          if (char === '[')
-            var start = idx + 1,
-              end = path.indexOf(']', start),
-              cursor = cursor[prop] = cursor[prop] || [],
-              prop = path.slice(start, end),
-              idx = end + 1
-          else {
-            var cursor = cursor[prop] = cursor[prop] || {},
-              start = char === '.' ? idx + 1 : idx,
-              bracket = path.indexOf('[', start),
-              dot = path.indexOf('.', start)
-            if (bracket < 0 && dot < 0)
-              var end = idx = len
-            else if (bracket < 0)
-              var end = idx = dot
-            else if (dot < 0)
-              var end = idx = bracket
-            else
-              var end = idx = bracket < dot ? bracket : dot
-            var prop = path.slice(start, end)
-          }
-        }
-        cursor[prop] = table[path]
-      }
-    return result['']
-  };
-})(window);
 
 /** scan_leaves */
 ;(function(global) {
@@ -173,120 +71,24 @@ if(i)a[i]&&a[i].stop&&r(a[i]);else for(i in a)a[i]&&a[i].stop&&mt.test(i)&&r(a[i
   }
 })(window);
 
-/** colors */
+/** 
+ * colors
+ * cachebust
+ * log_globals
+ * log
+ * show_headers
+ * performance
+ * view_cookies
+ * view_headers
+ * qs_params
+ */
 (function(global) {
   /** print all colors on page */
-  global.colors = function fn_colors() {
-    var includeBorderColorsWithZeroWidth = false
-    var allColors = {}
-    var props = ['background-color', 'color', 'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color']
-    var skipColors = {
-      'rgb(0, 0, 0)': 1,
-      'rgba(0, 0, 0, 0)': 1,
-      'rgb(255, 255, 255)': 1
-    }
-    var arr = []
-    arr.forEach.call(document.querySelectorAll('*'), function(node) {
-      var nodeColors = {}
-      props.forEach(function(prop) {
-        var color = window.getComputedStyle(node, null).getPropertyValue(prop),
-          thisIsABorderProperty = prop.indexOf('border') != -1,
-          notBorderZero = thisIsABorderProperty ? window.getComputedStyle(node, null).getPropertyValue(prop.replace('color', 'width')) !== '0px' : true,
-          colorConditionsMet
-        if (includeBorderColorsWithZeroWidth) {
-          colorConditionsMet = color && !skipColors[color]
-        } else {
-          colorConditionsMet = color && !skipColors[color] && notBorderZero
-        }
-        if (colorConditionsMet) {
-          if (!allColors[color]) {
-            allColors[color] = {
-              count: 0,
-              nodes: []
-            }
-          }
-          if (!nodeColors[color]) {
-            allColors[color].count++
-              allColors[color].nodes.push(node)
-          }
-          nodeColors[color] = true
-        }
-      })
-    })
-
-    function rgbTextToRgbArray(rgbText) {
-      return rgbText.replace(/\s/g, '').match(/\d+,\d+,\d+/)[0].split(',').map(function(num) {
-        return parseInt(num, 10)
-      })
-    }
-
-    function componentToHex(c) {
-      var hex = c.toString(16)
-      return hex.length == 1 ? '0' + hex : hex
-    }
-
-    function rgbToHex(rgbArray) {
-      var r = rgbArray[0],
-        g = rgbArray[1],
-        b = rgbArray[2]
-      return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
-    }
-    var allColorsSorted = []
-    for (var i in allColors) {
-      var rgbArray = rgbTextToRgbArray(i)
-      var hexValue = rgbToHex(rgbArray)
-      allColorsSorted.push({
-        key: i,
-        value: allColors[i],
-        hexValue: hexValue
-      })
-    }
-    allColorsSorted = allColorsSorted.sort(function(a, b) {
-      return b.value.count - a.value.count
-    })
-    var nameStyle = 'font-weight:normal;'
-    var countStyle = 'font-weight:bold;'
-
-    function colorStyle(color) {
-      return 'background:' + color + ';color:' + color + ';border:1px solid #333;'
-    }
-    console.group('Total colors used in elements on the page: ' + window.location.href + ' are ' + allColorsSorted.length)
-    allColorsSorted.forEach(function(c) {
-      console.groupCollapsed('%c %c ' + c.key + ' ' + c.hexValue + ' %c(' + c.value.count + ' times)', colorStyle(c.key), nameStyle, countStyle)
-      c.value.nodes.forEach(function(node) {
-        console.log(node)
-      })
-      console.groupEnd()
-    })
-    console.groupEnd('All colors used in elements on the page')
-  };
+  global.colors=function fn_colors(){var includeBorderColorsWithZeroWidth=false;var allColors={};var props=["background-color","color","border-top-color","border-right-color","border-bottom-color","border-left-color"];var skipColors={"rgb(0, 0, 0)":1,"rgba(0, 0, 0, 0)":1,"rgb(255, 255, 255)":1};var arr=[];arr.forEach.call(document.querySelectorAll("*"),function(node){var nodeColors={};props.forEach(function(prop){var color=window.getComputedStyle(node,null).getPropertyValue(prop),thisIsABorderProperty=prop.indexOf("border")!=-1,notBorderZero=thisIsABorderProperty?window.getComputedStyle(node,null).getPropertyValue(prop.replace("color","width"))!=="0px":true,colorConditionsMet;if(includeBorderColorsWithZeroWidth){colorConditionsMet=color&&!skipColors[color]}else{colorConditionsMet=color&&!skipColors[color]&&notBorderZero}if(colorConditionsMet){if(!allColors[color]){allColors[color]={count:0,nodes:[]}}if(!nodeColors[color]){allColors[color].count++;allColors[color].nodes.push(node)}nodeColors[color]=true}})});function rgbTextToRgbArray(rgbText){return rgbText.replace(/\s/g,"").match(/\d+,\d+,\d+/)[0].split(",").map(function(num){return parseInt(num,10)})}function componentToHex(c){var hex=c.toString(16);return hex.length==1?"0"+hex:hex}function rgbToHex(rgbArray){var r=rgbArray[0],g=rgbArray[1],b=rgbArray[2];return"#"+componentToHex(r)+componentToHex(g)+componentToHex(b)}var allColorsSorted=[];for(var i in allColors){var rgbArray=rgbTextToRgbArray(i);var hexValue=rgbToHex(rgbArray);allColorsSorted.push({key:i,value:allColors[i],hexValue:hexValue})}allColorsSorted=allColorsSorted.sort(function(a,b){return b.value.count-a.value.count});var nameStyle="font-weight:normal;";var countStyle="font-weight:bold;";function colorStyle(color){return"background:"+color+";color:"+color+";border:1px solid #333;"}console.group("Total colors used in elements on the page: "+window.location.href+" are "+allColorsSorted.length);allColorsSorted.forEach(function(c){console.groupCollapsed("%c %c "+c.key+" "+c.hexValue+" %c("+c.value.count+" times)",colorStyle(c.key),nameStyle,countStyle);c.value.nodes.forEach(function(node){console.log(node)});console.groupEnd()});console.groupEnd("All colors used in elements on the page")};
+  
   /** bust all scripts on page */
-  global.cachebust = function() {
-    var rep = /.*\?.*/,
-      links = document.getElementsByTagName('link'),
-      scripts = document.getElementsByTagName('script'),
-      process_scripts = true
-    for (var i = 0; i < links.length; i++) {
-      var link = links[i],
-        href = link.href
-      if (rep.test(href)) {
-        link.href = href + '&' + Date.now()
-      } else {
-        link.href = href + '?' + Date.now()
-      }
-    }
-    if (process_scripts) {
-      for (var i = 0; i < scripts.length; i++) {
-        var script = scripts[i],
-          src = script.src
-        if (rep.test(src)) {
-          script.src = src + '&' + Date.now()
-        } else {
-          script.src = src + '?' + Date.now()
-        }
-      }
-    }
-  };
+  global.cachebust=function(){for(var e=/.*\?.*/,t=document.getElementsByTagName("link"),a=document.getElementsByTagName("script"),n=!0,r=0;r<t.length;r++){var o=t[r],c=o.href;e.test(c)?o.href=c+"&"+Date.now():o.href=c+"?"+Date.now()}if(n)for(var r=0;r<a.length;r++){var s=a[r],f=s.src;e.test(f)?s.src=f+"&"+Date.now():s.src=f+"?"+Date.now()}};
+
   /** log global variables */
   global.log_globals = function() {
       'use strict'
@@ -311,7 +113,7 @@ if(i)a[i]&&a[i].stop&&r(a[i]);else for(i in a)a[i]&&a[i].stop&&mt.test(i)&&r(a[i
         return ret
       }
       console.log(detectGlobals())
-    },
+    };
   global.log = function() {
       Function.prototype.bind.call(console.log, console)
     };
